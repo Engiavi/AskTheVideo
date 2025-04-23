@@ -56,4 +56,4 @@ git clone https://github.com/Engiavi/AskTheVideo.git
 cd AskTheVideo
 python -m venv venv
 venv/Scripts/Activate
-pip install -r requirements.txt
+python -m pip install -r requirements.txt
