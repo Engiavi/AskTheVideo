@@ -54,4 +54,6 @@ Skip the scrolling and stop wasting time watching full-length videos just to fin
 ```bash
 git clone https://github.com/Engiavi/AskTheVideo.git
 cd AskTheVideo
+python -m venv venv
+venv/Scripts/Activate
 pip install -r requirements.txt
