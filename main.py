@@ -9,5 +9,14 @@ load_dotenv() # load environment variables from .env file
 model = ChatGoogleGenerativeAI(model= "google-gemini-1.5-turbo")
 
 # step 1 :- Indexing (Document Ingesetion)
-video_id = "J5_-l7WIO_w" # dealing with video id instead of url, in future we can add a function to extract video id from url
+video_id = "Gfr50f6ZBvo" # dealing with video id instead of url, in future we can add a function to extract video id from url
+try:
+    # If you don’t care which language, this returns the “best” one
+    transcript_list = YouTubeTranscriptApi.get_transcript(video_id, languages=["en"])
+ 
+    # Flatten it to plain text
+    transcript = " ".join(chunk["text"] for chunk in transcript_list)
+    print(transcript)
 
+except TranscriptsDisabled:
+    print("No captions available for this video.")
