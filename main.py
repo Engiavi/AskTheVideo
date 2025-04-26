@@ -43,4 +43,10 @@ else:
 # print(vector_store.index_to_docstore_id)
 
 # To see a particular document by ID (example usage)
-print(vector_store.docstore._dict['d634eaab-9733-45d3-8cd4-9d9da8737873'])
+# print(vector_store.docstore._dict['d634eaab-9733-45d3-8cd4-9d9da8737873'])
+
+
+#step2 : Retriever
+retriever = vector_store.as_retriever(search_type="similarity", search_kwargs={"k": 4})
+# print(retriever) #it gives the information about the retriever, i.e. which vector stores and embedding models  
+print(retriever.invoke('What is deepmind'))
