@@ -8,8 +8,6 @@ from dotenv import load_dotenv
 
 load_dotenv()  # load environment variables from .env file
 
-model = ChatGoogleGenerativeAI(model= "google-gemini-1.5-turbo")
-
 # Step 1: Indexing (Document Ingestion)
 video_id = "Gfr50f6ZBvo"
 vector_store_path = f"vector_store_{video_id}"
@@ -49,4 +47,27 @@ else:
 #step2 : Retriever
 retriever = vector_store.as_retriever(search_type="similarity", search_kwargs={"k": 4})
 # print(retriever) #it gives the information about the retriever, i.e. which vector stores and embedding models  
-print(retriever.invoke('What is deepmind'))
+# print(retriever.invoke('What is deepmind'))
+
+# Step 3: Augumentation
+llm = ChatGoogleGenerativeAI(model= "gemini-2.5-pro-preview-03-25")
+prompt = PromptTemplate(
+    template="""
+      You are a helpful assistant.
+      Answer ONLY from the provided transcript context.
+      If the context is insufficient, just say you don't know.
+
+      {context}
+      Question: {question}
+    """,
+    input_variables = ['context', 'question']
+)
+
+question          = "is the topic of nuclear fusion discussed in this video? if yes then what was discussed"
+retrieved_docs    = retriever.invoke(question)
+# print(retrieved_docs)
+context_text = "\n\n".join(doc.page_content for doc in retrieved_docs) # this line of code helps us to get the content of the document
+# print(context_text)
+
+final_prompt = prompt.invoke({"context": context_text, "question": question})
+print(final_prompt)
