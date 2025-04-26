@@ -5,6 +5,8 @@ from langchain_google_genai import ChatGoogleGenerativeAI,GoogleGenerativeAIEmbe
 from langchain_community.vectorstores import FAISS
 from langchain_core.prompts import PromptTemplate
 from dotenv import load_dotenv
+from langchain_core.runnables import RunnableParallel, RunnablePassthrough, RunnableLambda
+from langchain_core.output_parsers import StrOutputParser
 
 load_dotenv()  # load environment variables from .env file
 
@@ -74,4 +76,17 @@ final_prompt = prompt.invoke({"context": context_text, "question": question})
 
 # Step 4: Generation
 ans = llm.invoke(final_prompt)
-print(ans.content)
+# print(ans.content)
+
+# step 5: building the chain
+def format_docs(retrieved_docs):
+  context_text = "\n\n".join(doc.page_content for doc in retrieved_docs)
+  return context_text
+parallel_chain = RunnableParallel({
+    'context': retriever | RunnableLambda(format_docs),
+    'question': RunnablePassthrough()
+})
+# print(parallel_chain.invoke('who is Demis'))
+parser = StrOutputParser()
+main_chain = parallel_chain | prompt | llm | parser
+print(main_chain.invoke('Can you summarize the video'))
