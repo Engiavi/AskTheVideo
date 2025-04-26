@@ -50,7 +50,7 @@ retriever = vector_store.as_retriever(search_type="similarity", search_kwargs={"
 # print(retriever.invoke('What is deepmind'))
 
 # Step 3: Augumentation
-llm = ChatGoogleGenerativeAI(model= "gemini-2.5-pro-preview-03-25")
+llm = ChatGoogleGenerativeAI(model= "gemini-2.5-flash-preview-04-17")
 prompt = PromptTemplate(
     template="""
       You are a helpful assistant.
@@ -70,4 +70,8 @@ context_text = "\n\n".join(doc.page_content for doc in retrieved_docs) # this li
 # print(context_text)
 
 final_prompt = prompt.invoke({"context": context_text, "question": question})
-print(final_prompt)
+# print(final_prompt)
+
+# Step 4: Generation
+ans = llm.invoke(final_prompt)
+print(ans.content)
